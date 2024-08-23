@@ -1,0 +1,14 @@
+.container {
+    margin-top: 5rem;
+}
+.form-container {
+    max-width: 500px;
+    margin: auto;
+}
+.is-invalid {
+    border-color: #dc3545;
+}
+.invalid-feedback {
+    display: block;
+    color: #dc3545;
+}
