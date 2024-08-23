@@ -1,0 +1,87 @@
+/* 공통 스타일 */
+body {
+    font-family: Arial, sans-serif;
+    padding-top: 56px; /* 헤더의 높이에 맞춰 여백 조정 */
+}
+
+/* 컨테이너 스타일 */
+.container {
+    margin-top: 2rem;
+}
+
+/* 게시물 헤더 스타일 */
+.article-header {
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 1rem;
+}
+.article-header .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.article-header .header-top h1 {
+    margin: 0;
+}
+.article-header .view-count {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+.article-header .meta-info {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.5rem;
+}
+
+/* 게시물 내용 스타일 */
+.article-content {
+    margin-bottom: 1.5rem;
+}
+
+/* 게시물 액션 버튼 스타일 */
+.article-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+.article-actions button {
+    margin-left: 0.5rem;
+}
+
+/* 댓글 섹션 스타일 */
+.comment-section {
+    margin-top: 2rem;
+}
+.comment {
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 1rem;
+    position: relative;
+}
+.comment .comment-meta {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+.comment .comment-content {
+    margin-top: 0.5rem;
+}
+.comment-form textarea {
+    resize: vertical;
+}
+.comment-actions {
+    margin-top: 0.5rem;
+}
+.comment-actions button {
+    margin-right: 0.5rem;
+}
+
+/* 페이지네이션 스타일 */
+.pagination {
+    margin: 0;
+}
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+}
