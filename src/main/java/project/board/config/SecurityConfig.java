@@ -4,15 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.NullRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import project.board.config.auth.PrincipalDetailsService;
 import project.board.config.oauth.PrincipalOauthDetailsService;
@@ -31,24 +32,16 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public DaoAuthenticationProvider daoAuthenticationProvider() {
-		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-		authProvider.setUserDetailsService(principalDetailsService);
-		authProvider.setPasswordEncoder(bCryptPasswordEncoder());
-		return authProvider;
-	}
-
-	@Bean
 	public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-		return http.getSharedObject(AuthenticationManagerBuilder.class)
-				.authenticationProvider(daoAuthenticationProvider())
-				.build();
+		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+		authenticationProvider.setUserDetailsService(principalDetailsService);
+		authenticationProvider.setPasswordEncoder(bCryptPasswordEncoder());
+		return new ProviderManager(authenticationProvider);
 	}
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
-		requestCache.setMatchingRequestParameterName("null");
+		RequestCache nullRequestCache = new NullRequestCache();
 
 		http.cors(Customizer.withDefaults())
 			.csrf(AbstractHttpConfigurer::disable);
@@ -64,19 +57,22 @@ public class SecurityConfig {
 				new AntPathRequestMatcher("/signup"),
 				new AntPathRequestMatcher("/"))
 			.permitAll().anyRequest().authenticated())
-			.userDetailsService(principalDetailsService)
 			.formLogin(
 				formLogin -> formLogin
 			.loginPage("/loginForm")
 			.loginProcessingUrl("/login")
-			.defaultSuccessUrl("/board"))
+			.defaultSuccessUrl("/board/posts"))
 			.logout(
-				logout -> logout
-			.logoutSuccessUrl("/board"))
+				logout -> logout.logoutRequestMatcher(
+						new AntPathRequestMatcher("/logout")
+				)
+			.logoutSuccessUrl("/board")
+			.invalidateHttpSession(true))
 			.oauth2Login(
 				oauth -> oauth.userInfoEndpoint(
 				oauthService -> oauthService.userService(principalOauthDetailsService))
-			.defaultSuccessUrl("/board"));
+			.defaultSuccessUrl("/board/posts"))
+			.requestCache((cache) -> cache.requestCache(nullRequestCache));
 		return http.build();
 	}
 }
