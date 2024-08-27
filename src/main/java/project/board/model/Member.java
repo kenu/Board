@@ -22,4 +22,10 @@ public class Member extends TimeEntity {
 
 	private String provider;
 	private String providerId;
+
+	// 소셜 로그인 시 메일이 중복된 경우 수정 날짜만 업데이트하여 기존 데이터는 보존
+	public Member updateModifiedDate() {
+		this.onPreUpdate();
+		return this;
+	}
 }

@@ -49,13 +49,14 @@ public class PrincipalOauthDetailsService extends DefaultOAuth2UserService {
 			oAuth2UserInfo = new NaverUserInfo((Map) oAuth2User.getAttributes().get("response"));
 		}
 
-		Optional<Member> findMember = memberRepository.findByProviderAndProviderId(oAuth2UserInfo.getProvider(), oAuth2UserInfo.getProviderId());
+		Optional<Member> findMember = memberRepository.findByEmail(oAuth2UserInfo.getEmail());
 		Member member;
 
 		// 소셜 로그인 시 계정 중복 여부를 검증
 		if (findMember.isPresent()) {
 			log.info("해당 이메일로 가입한 계정이 존재합니다.");
 			member = findMember.get();
+			saveOrUpdate(oAuth2UserInfo);
 		} else {
 			log.info("해당 이메일로 가입한 계정이 존재하지 않습니다. 소셜 로그인과 동시에 회원가입이 자동으로 진행됩니다.");
 			// OAuth 2.0 유저의 경우 패스워드가 없음
@@ -70,5 +71,18 @@ public class PrincipalOauthDetailsService extends DefaultOAuth2UserService {
 
 		memberRepository.save(member);
 		return new PrincipalDetails(member, oAuth2User.getAttributes());
+	}
+
+	// 동일한 메일로 소셜 로그인이 진행된 이력이 있을 경우 수정된 날짜&시각만을 업데이트하여 기존 데이터가 보존되도록 함
+	private Member saveOrUpdate(OAuth2UserInfo oAuth2UserInfo) {
+		String email = oAuth2UserInfo.getEmail();
+		String name = oAuth2UserInfo.getName();
+		Member member = memberRepository.findByEmail(email)
+				.map(Member::updateModifiedDate)
+				.orElse(Member.builder()
+						.email(email)
+						.username(name)
+						.build());
+		return memberRepository.save(member);
 	}
 }
