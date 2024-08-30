@@ -3,7 +3,7 @@ package project.board.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import project.board.dto.MemberRequestDTO;
+import project.board.dto.SignUpRequestDTO;
 import project.board.model.Member;
 import project.board.model.Role;
 import project.board.repository.MemberRepository;
@@ -15,7 +15,7 @@ public class MemberService {
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final MemberRepository memberRepository;
 
-	public void save(MemberRequestDTO dto) {
+	public void save(SignUpRequestDTO dto) {
 		Member member = Member.builder()
 				.username(dto.getUsername())
 				.email(dto.getEmail())
