@@ -12,6 +12,7 @@ import project.board.config.oauth.provider.GoogleUserInfo;
 import project.board.config.oauth.provider.KakaoUserInfo;
 import project.board.config.oauth.provider.NaverUserInfo;
 import project.board.config.oauth.provider.OAuth2UserInfo;
+import project.board.dto.MemberDTO;
 import project.board.model.Member;
 import project.board.model.Role;
 import project.board.repository.MemberRepository;
@@ -69,8 +70,10 @@ public class PrincipalOauthDetailsService extends DefaultOAuth2UserService {
 					.build();
 		}
 
+		MemberDTO memberDTO = new MemberDTO(member);
+
 		memberRepository.save(member);
-		return new PrincipalDetails(member, oAuth2User.getAttributes());
+		return new PrincipalDetails(memberDTO, oAuth2User.getAttributes());
 	}
 
 	// 소셜 로그인 중복 계정 가입 시 → username, provider, providerId, modified_date 정보만 변경
