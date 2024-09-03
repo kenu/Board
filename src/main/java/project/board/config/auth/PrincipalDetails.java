@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import project.board.model.Member;
+import project.board.dto.MemberDTO;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,16 +14,16 @@ import java.util.Map;
 @Getter
 public class PrincipalDetails implements UserDetails, OAuth2User {
 
-	private final Member member;
+	private final MemberDTO member;
 	private Map<String, Object> attributes;
 
 	// Spring Security 로그인시 사용
-	public PrincipalDetails(Member member) {
+	public PrincipalDetails(MemberDTO member) {
 		this.member = member;
 	}
 
 	// OAuth2.0 로그인시 사용
-	public PrincipalDetails(Member member, Map<String, Object> attributes) {
+	public PrincipalDetails(MemberDTO member, Map<String, Object> attributes) {
 		this.member = member;
 		this.attributes = attributes;
 	}
