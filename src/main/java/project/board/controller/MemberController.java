@@ -51,7 +51,7 @@ public class MemberController {
 	}
 
 	// 로그아웃
-	@PostMapping("/logout")
+	@GetMapping("/logout")
 	public String logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null) {
