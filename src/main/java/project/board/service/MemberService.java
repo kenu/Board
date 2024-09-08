@@ -1,8 +1,11 @@
 package project.board.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import project.board.config.auth.PrincipalDetails;
 import project.board.dto.SignUpRequestDTO;
 import project.board.model.Member;
 import project.board.model.Role;
@@ -25,5 +28,11 @@ public class MemberService {
 				.providerId("default")
 				.build();
 		memberRepository.save(member);
+	}
+
+	public UserDetails findUserByEmail(String email) {
+		Member member = memberRepository.findByEmail(email).orElseThrow(
+				() -> new UsernameNotFoundException("사용자 정보를 찾을 수 없습니다."));
+		return new PrincipalDetails(member.getEmail(), member.getPassword(), member.getRole());
 	}
 }
