@@ -1,4 +1,4 @@
-package project.board.config.custom;
+package project.board.config.auth;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
